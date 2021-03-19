@@ -7,11 +7,11 @@
 Compress_Data_2020(s_n = s_n, CompMethod = CompMethod, Partitions = Partitions)
 }
 \arguments{
+\item{s_n}{The multi-block object.}
+
 \item{CompMethod}{It can be 'Normal' (default), 'Kernel', 'PCT', 'Tall' or 'Wide'.}
 
 \item{Partitions}{The number of partitions.}
-
-\item{s_n.}{The multi-block object.}
 }
 \value{
 The compressed multi-block.
