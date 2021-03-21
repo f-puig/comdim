@@ -2,8 +2,9 @@
 
 export(BuildMultiBlock)
 export(ColumnsPartition)
+export(ComDim_PCA)
 export(Compress_Data_2020)
 export(PCA_Tall_PCT_DNR)
 export(RowsPartition)
-export(comdim_PCA)
-export(splitRB)
+export(SelectFeaturesRB)
+export(SplitRB)

@@ -33,7 +33,7 @@ BuildMultiBlock(
 The multi-block
 }
 \description{
-Creates a multi-block structure compatible with ComDim_PCA_2020.R
+Creates a multi-block structure compatible with ComDim_PCA_2020()
 }
 \examples{
  b1 = matrix(rnorm(500),10,50) # 10 rows and 50 columns

@@ -1,10 +1,10 @@
-splitRB <- function( MB = MB, checkSampleCorrespondence = FALSE) {
-  
-#' splitRB - Building the RB list compatible with comdim_PCA().
+SplitRB <- function( MB = MB, checkSampleCorrespondence = FALSE) {
+
+#' SplitRB - Building the RB list compatible with ComDim_PCA().
 #'
 #' To split a multi-block into a list containing smaller blocks, comprising each data from one batch.
 #' @param  MB The multi-block structure built with BuildMultiblock().
-#' @param  checkSampleCorrespondence If FALSE, the same number of samples and the sample order are assumed for all the batches. If TRUE, only the samples found in all replicate blocks will be included in the final structure.  
+#' @param  checkSampleCorrespondence If FALSE, the same number of samples and the sample order are assumed for all the batches. If TRUE, only the samples found in all replicate blocks will be included in the final structure.
 #' @return The list containing the multi-block composed of the replicate-blocks.
 #' @examples
 #' b1 = matrix(rnorm(500),10,50)
@@ -12,13 +12,13 @@ splitRB <- function( MB = MB, checkSampleCorrespondence = FALSE) {
 #' b2 = matrix(rnorm(800),30,80)
 #' batch_b2 = c(rep(1,10),rep(2,10),rep(3,10))
 #' # Generate the multi-block (mb)
-#' mb <- BuildMultiBlock(b1, batches = batch_b1)   
+#' mb <- BuildMultiBlock(b1, batches = batch_b1)
 #' mb <- BuildMultiBlock(b2, growingMB = mb, batches = batch_b2, equalSampleNumber = FALSE)
-#' rb <- splitRB(mb)
-#' @export 
-  
+#' rb <- SplitRB(mb)
+#' @export
+
   newMB <- list()
-  
+
   # Check MB
   if(is.list(MB)){
     for(i in 1:length(MB)){
@@ -50,13 +50,13 @@ splitRB <- function( MB = MB, checkSampleCorrespondence = FALSE) {
     print('The provided multi-block is not a list.')
     stop('The multi-block must be a list.')
   }
-  
+
   # Check that the batch information is correctly provided for all the blocks:
   give_error <- 0
 
   batch_names <- list()
   samples_per_batch <- list()
-  
+
   for (i in 1:length(MB)){ # Check the batch information is consistent across RBs
     batch_names[[i]] <- sort(unique(MB[[i]]$Batch))
     sampled<-as.vector(NULL)
@@ -72,8 +72,8 @@ splitRB <- function( MB = MB, checkSampleCorrespondence = FALSE) {
     print('Information is missing regarding the splitting.')
     print('Using checkSampleCorrespondence as TRUE is recommended.')
     stop('The data cannot be split into replicate blocks.')
-  } 
-  
+  }
+
   for (i in 1:length(MB)){
     if(checkSampleCorrespondence == TRUE){
       for(j in 1:length(batch_names[[i]])){
@@ -86,12 +86,12 @@ splitRB <- function( MB = MB, checkSampleCorrespondence = FALSE) {
       }
     }
   }
-  
+
   if (checkSampleCorrespondence == TRUE && length(replicate_names)== 0) {
     print('There are 0 samples common across the replicate blocks')
     give_error <- 1
   }
-  
+
   if (give_error) {
     stop('The data cannot be split into replicate blocks.')
   }
@@ -100,9 +100,9 @@ splitRB <- function( MB = MB, checkSampleCorrespondence = FALSE) {
   k <-1
   for (i in 1:length(MB)){
     for (j in 1:length(batch_names[[i]])){
-      
+
       growingMB <- list() # The Replicate block
-      
+
       batch_position <- which(MB[[i]]$Batch == batch_names[[i]][j])
       if (checkSampleCorrespondence == TRUE) {
         replicate_position <- as.vector(NULL)
@@ -116,19 +116,19 @@ splitRB <- function( MB = MB, checkSampleCorrespondence = FALSE) {
           stop('Existence of duplicate samples within one or more batches.')
         }
       }
-      
+
       sorted <- order(MB[[i]]$Samples[batch_position])
-      
+
       #growingMB$Name <- paste(MB[[i]]$Name, as.character(batch_names[[i]][j]), sep='_R')
       growingMB$Data <- MB[[i]]$Data[batch_position[sorted],]
       growingMB$Variables <- MB[[i]]$Variables
       growingMB$Samples <- MB[[i]]$Samples[batch_position[sorted]]
       growingMB$Batch <- rep(batch_names[[i]][j],length(batch_position))
-      
+
       #if(length(names(MB[[i]])) > 5){ # In case there are additional fields
       if(length(names(MB[[i]])) > 4){ # In case there are additional fields
         newFields <- setdiff(names(MB[[i]]),names(growingMB))
-        
+
         for(fields in 1:length(newFields)) {
           if(length(MB[[i]][[newFields[fields]]]) == length(MB[[i]]$Samples)) {
             growingMB[[newFields[fields]]] <- MB[[i]][[newFields[fields]]][batch_position[sorted]]
@@ -138,24 +138,24 @@ splitRB <- function( MB = MB, checkSampleCorrespondence = FALSE) {
           }
         }
       }
-      
+
       #newMB[[k]] <- growingMB
       newMB[[ paste(names(MB)[i], as.character(batch_names[[i]][j]), sep='_R') ]]<- growingMB
-      
+
       k <- k + 1
-      
+
     }
   }
 
   ## SHOW A DATA-FRAME WITH ALL THE SAMPLE NAMES FOR ALL THE (REPLICATE) BLOCKS.
   df_SampleNames <- matrix(, nrow = length(newMB[[k-1]]$Samples), ncol = length(newMB))
   #labelSampleNames <- as.vector(NULL)
-  
+
   for (k in 1:length(newMB)){
     df_SampleNames[,k] <- newMB[[k]]$Samples
     #labelSampleNames[k] <- names(newMB[[k]]
   }
-  
+
   colnames(df_SampleNames) <- names(newMB)
   print('The sample names are:')
   print(df_SampleNames)
