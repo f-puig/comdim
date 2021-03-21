@@ -120,10 +120,25 @@ SelectFeaturesRB <- function(RB = RB, results = results, ndim = NULL, blocks = N
       }
     }
   }
+
+  if(!(requireNamespace("pracma", quietly = TRUE))){
+    warning("The 'pracma' package is needed but not installed." )
+  }
+
+  if(plots != "NO" && !(requireNamespace("ggplot2", quietly = TRUE))){
+    warning("The 'ggplot2' package is needed but not installed." )
+    plots <- "NO"
+  }
+
+  if(plots != "NO" && !(requireNamespace("gridExtra", quietly = TRUE))){
+    warning("The 'ggplot2' package is needed but not installed." )
+    plots <- "separated"
+  }
+
   mean_blocks <- list(NULL)
   for (i in 1:length(blocks)){
     # Mean-center
-    if (isTRUE(mean.RB)){
+    if (isTRUE(mean.RB) && requireNamespace("pracma", quietly = TRUE)){
       mean_blocks[[i]] <- RB[[blocks[i]]]$Data - pracma::repmat(colMeans(RB[[blocks[i]]]$Data),unique(sample_number),1)
     } else {
       mean_blocks[[i]] <- RB[[blocks[i]]]$Data
@@ -142,7 +157,12 @@ SelectFeaturesRB <- function(RB = RB, results = results, ndim = NULL, blocks = N
   s2 <- matrix(, nrow = length(blocks), ncol=unique(variable_number[blocks]))
 
   # Scale Q in case it wasnt (if the data comes from ComDim, it was).
-  qs <- results$Q$Data[,ndim]%*%pracma::pinv(t(results$Q$Data[,ndim])%*%results$Q$Data[,ndim])
+  if (requireNamespace("pracma", quietly = TRUE)){
+    qs <- results$Q$Data[,ndim]%*%pracma::pinv(t(results$Q$Data[,ndim])%*%results$Q$Data[,ndim])
+  } else {
+    qs <- results$Q$Data[,ndim]
+    warning("If 'results' was not scaled, the output from this function may be incorrect.")
+  }
 
   # Calculate the corr and cov values.
   for (i in 1:length(blocks)){
@@ -206,7 +226,7 @@ SelectFeaturesRB <- function(RB = RB, results = results, ndim = NULL, blocks = N
 
   if (grepl('NO', plots, ignore.case = TRUE)) {
     # Do nothing.
-  }else if (grepl('separated', plots, ignore.case = TRUE)){
+  }else if (grepl('separated', plots, ignore.case = TRUE) && (requireNamespace("ggplot2", quietly = TRUE))){
     for(i in 1:length(blocks)){
       xx <- data.frame(Covariance = s1[i,], Correlation = s2[i,])
       color<-rep('#000000', variable_number[blocks[i]])
@@ -219,7 +239,7 @@ SelectFeaturesRB <- function(RB = RB, results = results, ndim = NULL, blocks = N
         ggplot2::geom_text(label=labels) +
         ggplot2::ggtitle(sprintf("S-plot for Block %d and component %i", blocks[i], ndim)))
     }
-  }else if (grepl('together', plots, ignore.case = TRUE)){
+  }else if (grepl('together', plots, ignore.case = TRUE)  && (requireNamespace("ggplot2", quietly = TRUE))){
     pi <- list(NULL)
     colori <- list(NULL)
     labelsi <- list(NULL)
