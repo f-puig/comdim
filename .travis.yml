@@ -1,7 +1,7 @@
 language: r
 r_packages:
     - pracma
-	- ggplot2
-	- gridExtra
+    - ggplot2
+    - gridExtra
 after_failure:
     - ./travis-tool.sh dump_logs
