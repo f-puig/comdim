@@ -5,6 +5,12 @@
 ## Introduction: the ComDim method
 ComDim (also known as CCSWA) is an unsupervised multi-block method that aims to simultaneously consider multiple data tables to find the latent components that are common to all the tables as well as those that are specific to each data table, along with the contribution of each of the tables to each of these components. ComDim determines a common space describing the dispersion of the samples in all the blocks, each block having a specific weight (__salience__) associated with each dimension in this common space. Significant differences in the saliences for a given dimension reflect the fact that the dimension contains different amounts of information coming from each block. In addition to the saliences, __Local loadings__ for each analyzed block and two different sets of scores are obtained. The first set corresponds to the __Local scores__ for each analyzed block while the second set is composed of the __Global scores__, common to all the blocks.
 
+## Why should I use ComDim?
+* To analyze __different types of data__ (ex. multi-omics) and see how they are untangled.
+* To deal with __unbalanced multi-block__ datasets (ex. different number of sample replicates in the blocks).
+* Within the data from the same analytical platform, to evaluate __inter-sample variability__ and __batch effects__ related to the analytical platform.
+* To investigate __cross-platform variability__, which is useful to detect errors in the sample preparation.
+
 ## Functions
 To successfully extract all the potential of the ComDim method, several functions coded in R are proposed:
 * __BuildMultiBlock()__: To merge several single data-blocks into a multi-block data set. 
