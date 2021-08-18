@@ -1,4 +1,4 @@
-ComDim_PCA <- function(data = data, ndim = NULL, normalise = TRUE, threshold = 1e-10, loquace = FALSE, output = 'TPL', CompMethod = 'Normal', Partitions = 1) {
+ComDim_PCA <- function(data = data, ndim = NULL, normalise = FALSE, threshold = 1e-10, loquace = FALSE, output = 'TPL', CompMethod = 'Normal', Partitions = 1) {
 
 #' ComDim - Finding common dimensions in multi-block datasets
 #'
@@ -36,9 +36,9 @@ ComDim_PCA <- function(data = data, ndim = NULL, normalise = TRUE, threshold = 1
 #' # Generate the multi-block (mb)
 #' mb <- BuildMultiBlock(b1, batches = batch_b1)
 #' mb <- BuildMultiBlock(b2, growingMB = mb, batches = batch_b2, equalSampleNumber = FALSE)
-#' rb <- SplitRB(mb)
+#' rw <- SplitRW(mb)
 #' # Do ComDim
-#' results <- ComDim_PCA(rb, 2) # In this analysis, we used 2 components.
+#' results <- ComDim_PCA(rw, 2) # In this analysis, we used 2 components.
 #' @export
 
 # INITIALISATION
